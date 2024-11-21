@@ -2,8 +2,6 @@
 import numpy as np
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.dates import DateFormatter
 import folium
 
 URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNe3p3E6MOF-F2uzAucnPmOaYJsH9iBTa7NXrbSSvIbZj4LEo5v5NboBT_14sbrsrNRnwPIRPZLcQ7/pub?output=csv"
