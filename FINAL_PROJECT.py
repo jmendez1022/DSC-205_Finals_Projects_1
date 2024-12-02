@@ -113,6 +113,45 @@ with tab3:
 st.markdown('---')
 st.markdown('---')
 
+st.title('Amount of Debt by Ethnicity')
+
+df = pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRFc5Pj4yRcauW4U2TGtKsS3IGtMKqVzoqDnG1wv0ZwtLE9gvm91n46Y6hfVWRy7Oo30qnjtxeQdyFU/pub?output=csv')
+df.columns = df.columns.str.strip()
+
+st.write("Unique values in Race/Ethnicity column:", df['Race/Ethncity'].unique())
+
+
+if st.checkbox('Show raw data'):
+    st.subheader('Raw data')
+    st.write(df)
+
+st.markdown('---')
+st.subheader('Debt by Race')
+st.dataframe(df, width=600, height=200)
+
+selected = st.radio('Select Ethnicity', df['Race/Ethncity'].unique())
+
+
+filtered_df = df[df['Race/Ethncity'] == selected]
+
+
+
+st.write("Average default rate:", filtered_df['Defaulted'].mean())
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+
+ax.bar(selected, filtered_df['Defaulted'])
+ax.set_xlabel('Race/Ethnicity')
+ax.set_ylabel('Default Rate (%)')
+ax.set_title(f'Default Rate for {selected}')
+
+
+ax.set_ylim(0, 25)
+
+
+st.pyplot(fig)
+
 
 
 
