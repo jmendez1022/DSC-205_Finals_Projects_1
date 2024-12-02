@@ -1,47 +1,13 @@
-
 import numpy as np
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 import folium
-
-URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNe3p3E6MOF-F2uzAucnPmOaYJsH9iBTa7NXrbSSvIbZj4LEo5v5NboBT_14sbrsrNRnwPIRPZLcQ7/pub?output=csv"
-df = pd.read_csv(URL)
-
-df.columns = df.columns.str.strip()
-
-geo_url = "https://raw.githubusercontent.com/python-visualization/folium/master/examples/data"
-state_geo = f"{geo_url}/us-states.json"
-
-m = folium.Map(location=[40, -95], zoom_start=4)
-
-choro = folium.Choropleth(
-    geo_data=state_geo,
-    name="choropleth",
-    data=df,
-    columns=["State", "Delinquency_percentage_rate"],
-    key_on="feature.properties.name",
-    fill_color="YlGn",
-    fill_opacity=0.7,
-    line_opacity=0.1,
-    legend_name="Delinquency Percentage",
-)
-choro.add_to(m)
-
-tooltip = 'Click me'
-for index, row in df.iterrows():
-    folium.Marker(location=[row['lat'], row['long']], 
-                  popup=f"{row['State']},{['Delinquency_percentage_rate']}%", 
-                  tooltip=tooltip).add_to(m)
-
-m.save("choropleth_map.html")
-
-st.components.v1.html(open("choropleth_map.html", "r").read(), height=600)
-
-st.markdown('---')
+st.title('Student Loans Deliquency and Defaults')
 st.markdown('---')
 
+st.header('Amount of Debt to # of Borrowers')
 
 link_2 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ4ltcLM-PwQcunJBA-rPGY5f_GLi5eZVi8PS6n-lpjMqdSSWnJVu7UVCpvNDVzG-FVMdPh8earJpt1/pub?output=csv"
 data_3 = pd.read_csv(link_2)
@@ -66,15 +32,49 @@ ax.legend()
 st.pyplot(fig)
 
 st.markdown('---')
-st.markdown('---')
+st.header('Student Loan Deliquency Rate by State')
+URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNe3p3E6MOF-F2uzAucnPmOaYJsH9iBTa7NXrbSSvIbZj4LEo5v5NboBT_14sbrsrNRnwPIRPZLcQ7/pub?output=csv"
 
+df = pd.read_csv(URL)
+df.columns = df.columns.str.strip()
+
+print(df.columns)  
+
+geo_url = "https://raw.githubusercontent.com/python-visualization/folium/master/examples/data"
+state_geo = f"{geo_url}/us-states.json"
+
+m = folium.Map(location=[40, -95], zoom_start=4)
+
+choro = folium.Choropleth(
+    geo_data=state_geo,
+    name="choropleth",
+    data=df,
+    columns=["State", "Delinquency_percentage_rate"],
+    key_on="feature.properties.name",
+    fill_color="YlGn",  
+    fill_opacity=0.7,
+    line_opacity=0.2,
+    line_color='white',  
+    legend_name="Delinquency Percentage",
+)
+choro.add_to(m)
+
+tooltip = 'Click me'
+for index, row in df.iterrows():
+    folium.Marker(
+        location=[row['lat'], row['long']], 
+        popup=f"{row['State']}, {row['Delinquency_percentage_rate']}%", 
+        tooltip=tooltip
+    ).add_to(m)
+
+m.save("choropleth_map.html")
+st.components.v1.html(open("choropleth_map.html", "r").read(), height=600)
+
+st.markdown('---')
 
 url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFMvS6Jrqn7g_S6x1-O7ADC5vapKdcd_LEeccS6GGPCNm-MI3kVOw9EzR2ehd22PPaJ-VPHozhkJsd/pub?output=csv"
 data = pd.read_csv(url)
-
-
 st.title("Student Loan Default Rate by Institution")
-
 
 fig1 = plt.figure()
 ax1 = fig1.add_subplot()
@@ -111,9 +111,8 @@ with tab3:
     st.pyplot(fig3)
 
 st.markdown('---')
-st.markdown('---')
 
-st.title('Amount of Debt by Ethnicity')
+st.title('Amount of Defaults by Ethnicity')
 
 df = pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRFc5Pj4yRcauW4U2TGtKsS3IGtMKqVzoqDnG1wv0ZwtLE9gvm91n46Y6hfVWRy7Oo30qnjtxeQdyFU/pub?output=csv')
 df.columns = df.columns.str.strip()
@@ -126,7 +125,7 @@ if st.checkbox('Show raw data'):
     st.write(df)
 
 st.markdown('---')
-st.subheader('Debt by Race')
+st.subheader('Defaults by Race')
 st.dataframe(df, width=600, height=200)
 
 selected = st.radio('Select Ethnicity', df['Race/Ethncity'].unique())
@@ -151,7 +150,6 @@ ax.set_ylim(0, 25)
 
 
 st.pyplot(fig)
-
 
 
 
